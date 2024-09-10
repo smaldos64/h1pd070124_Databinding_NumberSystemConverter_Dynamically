@@ -1,0 +1,191 @@
+﻿#define Use_XAML_Components_In_Code
+
+using CommunityToolkit.Mvvm.ComponentModel;
+using Databinding_NumberSystemConverter.Constants;
+using System.Media;
+using System.Text;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Documents;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
+using System.Windows.Shapes;
+using ToolsLibrary;
+using static System.Net.Mime.MediaTypeNames;
+
+using Databinding_NumberSystemConverter.Tools;
+using System.Reflection;
+using System.Configuration;
+using Databinding_NumberSystemConverter.Converters;
+
+namespace Databinding_NumberSystemConverter
+{
+    /// <summary>
+    /// Interaction logic for MainWindow.xaml
+    /// </summary>
+    public partial class MainWindow : Window
+    {
+        public MainWindow()
+        {
+            InitializeComponent();
+            InitializeComboBox();
+        }
+
+        private void InitializeComboBox()
+        {
+            cmbRadixNumbers.Items.Clear();
+            for (int Counter = Const.MinRadixNumberSystem; Counter <= Const.MaxRadixNumberSystem; ++Counter)
+            {
+                if (!Const.RadixNumberSystemInUseList.Contains(Counter))
+                {
+                    cmbRadixNumbers.Items.Add(Counter.ToString());
+                }
+            }
+            cmbRadixNumbers.SelectedIndex = 0;
+        }
+
+        private void txtCheckForValidPositiveNumberPressedForRadixSystem(object sender, KeyEventArgs e)
+        {
+            if (!(KeyHelper.IsKeyPressedValidInSpecifiedKeyArray(e.Key, Const.ValidSystemsKeyArray)))
+            {
+                if (!(KeyHelper.IsKeyPressedValidForCurrentNumberSystem(e.Key,
+                                                                        Const.RadixNumberSystemsValidKeysArray,
+                                                                        int.Parse(((TextBox)sender).Tag.ToString()))))
+                {
+                    SystemSounds.Beep.Play();
+                    e.Handled = true;
+                }
+            }
+        }
+
+        #region DynamicRadixNumberSystemHandling
+        private void btnRadixNumbers_Click(object sender, RoutedEventArgs e)
+        {
+            int RadixNumberSystemValue = Convert.ToInt16(cmbRadixNumbers.SelectedValue);
+            RadixNumberSystemValue = 16;
+            DynamicKeysInfo DynamicKeysInfoObject = new DynamicKeysInfo();
+            TextBox TextBoxObject = new TextBox();
+
+            if ((RadixNumberSystemValue >= Const.MinRadixNumberSystem) &&
+                 (RadixNumberSystemValue <= Const.MaxRadixNumberSystem))
+            {
+                Const.RadixNumberSystemInUseList.Add(RadixNumberSystemValue);
+                InitializeComboBox();
+
+                ControlTools.InsertRowInGrid(MainGrid);
+                
+                String LabelName = "lblRadixNumber" + RadixNumberSystemValue.ToString();
+                String LabelText = RadixNumberSystemValue.ToString() + " Tal System (" + RadixNumberSystemValue.ToString() + " tal / cifre) : ";
+                ControlTools.InsertLabelInGrid(MainGrid,
+                                               LabelName,
+                                               LabelText,
+                                               (MainGrid.RowDefinitions.Count - 1),
+                                               Const.LabelColumnNumber,
+                                               Const.LabelColumnSpan);
+
+                DynamicKeysInfoObject.FirstLabelInGridRowNumber = MainGrid.Children.Count - 1;
+                DynamicKeysInfoObject.GridRowNumber = MainGrid.RowDefinitions.Count - 1;
+                DynamicKeysInfoObject.RadixNumber = RadixNumberSystemValue;
+
+                Const.DynamicKeysInfoList.Add(DynamicKeysInfoObject);
+
+                string TextBoxName = "txtRadixNumber" + RadixNumberSystemValue.ToString();
+                TextBoxObject = ControlTools.InsertTextBoxInGrid(MainGrid,
+                                                 TextBoxName,
+                                                 (MainGrid.RowDefinitions.Count - 1),
+                                                 Const.TextBoxColumnNumber,
+                                                 Const.TextBoxColumnSpan,
+                                                 220,
+                                                 23,
+                                                 FunctionKeyDown: txtCheckForValidPositiveNumberPressedForRadixSystem,
+                                                 FunctionTextChanged: null);
+
+                TextBoxObject.Tag = RadixNumberSystemValue;
+                TextBoxObject.MaxLength = 8;
+
+                Binding BindingObject = new Binding();
+                //BindingObject.Source = TextBoxObject;
+                BindingObject.UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged;
+                BindingObject.Mode = BindingMode.TwoWay;
+                BindingObject.ElementName = "txtRadixNumber10";
+                //BindingObject.Path = new PropertyPath("Text");
+                BindingObject.Path = new PropertyPath(TextBox.TextProperty);
+                BindingObject.ConverterParameter = RadixNumberSystemValue;
+                BindingObject.Converter = new GenericRadixNumberConverter();
+
+                //BindingOperations.SetBinding(txtRadixNumber10, TextBox.TextProperty, BindingObject);
+                BindingOperations.SetBinding(TextBoxObject, TextBox.TextProperty, BindingObject);
+
+                //TextBoxObject.Text = "{Binding ElementName = txtRadixNumber10, Path = Text, Converter = {StaticResource GenericConverter}, UpdateSourceTrigger = PropertyChanged, ConverterParameter = 16}";
+                string ButtonName = "btnRadixNumber_" + RadixNumberSystemValue.ToString();
+                string ButtonText = "Slet " + RadixNumberSystemValue.ToString() + " tal/ciffer systemet";
+
+                ControlTools.InsertButtonInGrid(MainGrid,
+                                                ButtonName,
+                                                ButtonText,
+                                                (MainGrid.RowDefinitions.Count - 1),
+                                                Const.ButtonColumnNumber,
+                                                Const.ButtonColumnSpan,
+                                                220,
+                                                23,
+                                                FunctionButtonClicked: btnClearRadixSystem_Click);
+            }
+        }
+
+        private void btnClearRadixSystem_Click(object sender, RoutedEventArgs e)
+        {
+            int LabelComponentNumberInGrid = -1;
+
+            String ButtonName = (((System.Windows.FrameworkElement)sender).Name);
+            ButtonName = ButtonName.Trim();
+            int SearchPosition = ButtonName.LastIndexOf("_");
+            int RadixNumberSystemValue = Convert.ToInt32(ButtonName.Substring(SearchPosition + 1));
+
+            int IndexInComponentsList = Const.DynamicKeysInfoList.FindIndex(r => r.RadixNumber == RadixNumberSystemValue);
+
+            //LabelComponentNumberInGrid = Const.DynamicKeysInfoList[IndexInComponentsList].FirstLabelInGridRowNumber;
+            if (Const.DynamicKeysInfoList.Count - 1 == IndexInComponentsList)
+            {
+                MainGrid.Children.RemoveRange(Const.DynamicKeysInfoList[IndexInComponentsList].FirstLabelInGridRowNumber,
+                                              Const.NumberOfControlsInRadixSystemsGridRow);
+            }
+            else
+            {
+                MainGrid.Children.RemoveRange(Const.DynamicKeysInfoList[IndexInComponentsList].FirstLabelInGridRowNumber,
+                                              Const.DynamicKeysInfoList[IndexInComponentsList + 1].FirstLabelInGridRowNumber - 
+                                              Const.DynamicKeysInfoList[IndexInComponentsList].FirstLabelInGridRowNumber);
+            }
+
+            MainGrid.RowDefinitions.RemoveAt(Const.DynamicKeysInfoList[IndexInComponentsList].GridRowNumber);
+            
+            //int GridRowNumberToRemove = Const.DynamicKeysInfoList[IndexInComponentsList].GridRowNumber;
+            //var GridRowToRemove = MainGrid.Children.OfType<Label>().Single(Child => Grid.GetRow(Child) == GridRowNumberToRemove);
+            //MainGrid.Children.Remove(GridRowToRemove);
+
+            int CounterInDynamicKeysInfoList = IndexInComponentsList + 1;
+
+            while (CounterInDynamicKeysInfoList < Const.DynamicKeysInfoList.Count)
+            {
+                int LabelComponentNumberInGridSave = Const.DynamicKeysInfoList[CounterInDynamicKeysInfoList].FirstLabelInGridRowNumber;
+                //Const.DynamicKeysInfoList[CounterInDynamicKeysInfoList].FirstLabelInGridRowNumber -= Const.NumberOfControlsInRadixSystemsGridRow;
+                Const.DynamicKeysInfoList[CounterInDynamicKeysInfoList].FirstLabelInGridRowNumber = LabelComponentNumberInGrid;
+                LabelComponentNumberInGrid = LabelComponentNumberInGridSave;
+                Const.DynamicKeysInfoList[CounterInDynamicKeysInfoList].GridRowNumber--;
+
+                CounterInDynamicKeysInfoList++;
+            }
+
+            Const.DynamicKeysInfoList.RemoveAt(IndexInComponentsList);
+
+            int IndexInRadixNumberSystemInUseList = Const.RadixNumberSystemInUseList.FindIndex(r => r == RadixNumberSystemValue);
+
+            Const.RadixNumberSystemInUseList.RemoveAt(IndexInRadixNumberSystemInUseList);
+
+            InitializeComboBox();
+        }
+#endregion
+    }
+}
