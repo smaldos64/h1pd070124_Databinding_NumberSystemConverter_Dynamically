@@ -46,12 +46,14 @@ namespace Databinding_NumberSystemConverter.Constants
         public static readonly int NumberOfBitsInByte = 8;
 
         public static readonly int MinRadixNumberSystem = 2;
-        public static readonly int MaxRadixNumberSystem = 64;
+        public static readonly int MaxRadixNumberSystem = 32;
 
         public static readonly int MinOctetValue = 0;
         public static readonly int MaxOctetValue = 255;
 
         public static readonly string NothingEnteredInTextBox = "0";
+
+        public static readonly char[] RadixCharacters = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ".ToCharArray();
 
         public static List<int> RadixNumberSystemInUseList = new List<int>()
         {

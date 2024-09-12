@@ -4,30 +4,26 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Data;
+using System.Globalization;
+
+using Databinding_NumberSystemConverter.Constants;
 
 namespace Databinding_NumberSystemConverter.Converters
 {
     [ValueConversion(typeof(string), typeof(string))]
     public class GenericRadixNumberConverter : IValueConverter
     {
-        private bool _waitingForDecimalConversionToOtherRadixNumberSystem = false;
-
         // Metoden herunder konverter fra det decimale talsystem =>
         // 10 tals/ciffer systemet til alle andre talsystemer. 
-        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        public object Convert(object Value, Type TargetType, object Parameter, System.Globalization.CultureInfo Culture)
         {
-            _waitingForDecimalConversionToOtherRadixNumberSystem = false;
-            if (value is string text)
+            if (Value is string Text)
             {
-                if (!string.IsNullOrEmpty(text))
+                if (!string.IsNullOrEmpty(Text))
                 {
-                    int radix = System.Convert.ToInt32(parameter);
-                    //string TempString = System.Convert.ToString(System.Convert.ToUInt32(text, radix));
-                    //String TempStringUpper = TempString.ToUpper();
-                    //return TempStringUpper;
-                    //String TempStringToReturn = System.Convert.ToString(System.Convert.ToUInt32(text, radix));
-                    //return TempStringToReturn;
-                    return System.Convert.ToString(System.Convert.ToUInt32(text), radix).ToUpper();
+                    int Radix = System.Convert.ToInt32(Parameter);
+                    //return System.Convert.ToString(System.Convert.ToUInt32(Text), Radix).ToUpper();
+                    return (ConvertFromDecimalToRadixSystem(Text, Radix));
                 }
                 else
                 {
@@ -42,35 +38,15 @@ namespace Databinding_NumberSystemConverter.Converters
 
         // Metoden herunder konverter tilbage til det decimale talsystem =>
         // 10 tals/ciffer systemet fra alle andre talsystemer. 
-        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        public object ConvertBack(object Value, Type TargetType, object Parameter, System.Globalization.CultureInfo Culture)
 
         {
-            if (true == _waitingForDecimalConversionToOtherRadixNumberSystem)
+            if (Value is string Text)
             {
-                return string.Empty;
-            }
-            else
-            {
-                _waitingForDecimalConversionToOtherRadixNumberSystem = true;
-            }
-
-            if (value is string text)
-            {
-                if (!string.IsNullOrEmpty(text))
+                if (!string.IsNullOrEmpty(Text))
                 {
-                    int radix = System.Convert.ToInt32(parameter);
-                    string DecimalString = "";
-                    try
-                    {
-                        DecimalString = System.Convert.ToString(System.Convert.ToUInt32(text, radix));
-                        return DecimalString;
-                    }
-                    catch (Exception ex)
-                    {
-                        string ErrorString = ex.ToString();
-                    }
-                    return string.Empty;
-                    //return System.Convert.ToString(System.Convert.ToUInt32(text, radix));
+                    int Radix = System.Convert.ToInt32(Parameter);
+                    return ConvertFromRadixSystemToDecimal(Text, Radix);
                 }
                 else
                 {
@@ -81,6 +57,36 @@ namespace Databinding_NumberSystemConverter.Converters
             {
                 return string.Empty;
             }
+        }
+
+        private string ConvertFromRadixSystemToDecimal(string RadixNumberSystemString, int Radix)
+        {
+            int DecimalValue = 0;
+            int Power = RadixNumberSystemString.Length - 1;
+
+            foreach (char c in RadixNumberSystemString)
+            {
+                int DigitValue = Array.IndexOf(Const.RadixCharacters, c);
+                DecimalValue += DigitValue * (int)Math.Pow(32, Power);
+                Power--;
+            }
+
+            return DecimalValue.ToString();
+        }
+
+        private string ConvertFromDecimalToRadixSystem(string DecimalString, int Radix)
+        {
+            int DecimalValue = System.Convert.ToInt32(DecimalString);
+            StringBuilder RadixNumberSystemString = new StringBuilder();
+
+            while (DecimalValue > 0)
+            {
+                int DigitValue = DecimalValue % Radix;
+                RadixNumberSystemString.Insert(0, Const.RadixCharacters[DigitValue]);
+                DecimalValue /= Radix;
+            }
+
+            return RadixNumberSystemString.ToString();
         }
     }
 }

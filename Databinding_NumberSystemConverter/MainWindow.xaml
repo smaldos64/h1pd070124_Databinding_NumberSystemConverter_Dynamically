@@ -89,7 +89,6 @@
                         Click="btnRadixNumbers_Click" 
                 />
 
-
                 <Label Content="Oktal Talsystem (8 tal/cifre) : " 
                    HorizontalAlignment="Left" 
                    VerticalAlignment="Top" 
@@ -112,6 +111,16 @@
                      KeyDown="txtCheckForValidPositiveNumberPressedForRadixSystem" 
                      Tag="8"
                      MaxLength="9"
+                />
+
+                <Button x:Name="btnDeleteNumbers"
+                    Content="Slet Alle tal" 
+                    HorizontalAlignment="Left" 
+                    VerticalAlignment="Top" 
+                    Width="120" 
+                    Grid.Row="2"
+                    Grid.Column="5" 
+                    Click="btnDeleteNumbers_Click" 
                 />  
 
                 <Label Content="Decimal Talsystem (10 tal/cifre) : " 

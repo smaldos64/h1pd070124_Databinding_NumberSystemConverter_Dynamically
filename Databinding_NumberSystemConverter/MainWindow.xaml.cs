@@ -65,7 +65,6 @@ namespace Databinding_NumberSystemConverter
         private void btnRadixNumbers_Click(object sender, RoutedEventArgs e)
         {
             int RadixNumberSystemValue = Convert.ToInt16(cmbRadixNumbers.SelectedValue);
-            RadixNumberSystemValue = 16;
             DynamicKeysInfo DynamicKeysInfoObject = new DynamicKeysInfo();
             TextBox TextBoxObject = new TextBox();
 
@@ -107,19 +106,15 @@ namespace Databinding_NumberSystemConverter
                 TextBoxObject.MaxLength = 8;
 
                 Binding BindingObject = new Binding();
-                //BindingObject.Source = TextBoxObject;
                 BindingObject.UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged;
                 BindingObject.Mode = BindingMode.TwoWay;
                 BindingObject.ElementName = "txtRadixNumber10";
-                //BindingObject.Path = new PropertyPath("Text");
                 BindingObject.Path = new PropertyPath(TextBox.TextProperty);
                 BindingObject.ConverterParameter = RadixNumberSystemValue;
                 BindingObject.Converter = new GenericRadixNumberConverter();
 
-                //BindingOperations.SetBinding(txtRadixNumber10, TextBox.TextProperty, BindingObject);
                 BindingOperations.SetBinding(TextBoxObject, TextBox.TextProperty, BindingObject);
 
-                //TextBoxObject.Text = "{Binding ElementName = txtRadixNumber10, Path = Text, Converter = {StaticResource GenericConverter}, UpdateSourceTrigger = PropertyChanged, ConverterParameter = 16}";
                 string ButtonName = "btnRadixNumber_" + RadixNumberSystemValue.ToString();
                 string ButtonText = "Slet " + RadixNumberSystemValue.ToString() + " tal/ciffer systemet";
 
@@ -135,6 +130,11 @@ namespace Databinding_NumberSystemConverter
             }
         }
 
+        private void btnDeleteNumbers_Click(object sender, RoutedEventArgs e)
+        {
+            txtRadixNumber2.Text = String.Empty;
+        }
+
         private void btnClearRadixSystem_Click(object sender, RoutedEventArgs e)
         {
             int LabelComponentNumberInGrid = -1;
@@ -146,7 +146,6 @@ namespace Databinding_NumberSystemConverter
 
             int IndexInComponentsList = Const.DynamicKeysInfoList.FindIndex(r => r.RadixNumber == RadixNumberSystemValue);
 
-            //LabelComponentNumberInGrid = Const.DynamicKeysInfoList[IndexInComponentsList].FirstLabelInGridRowNumber;
             if (Const.DynamicKeysInfoList.Count - 1 == IndexInComponentsList)
             {
                 MainGrid.Children.RemoveRange(Const.DynamicKeysInfoList[IndexInComponentsList].FirstLabelInGridRowNumber,
@@ -160,17 +159,12 @@ namespace Databinding_NumberSystemConverter
             }
 
             MainGrid.RowDefinitions.RemoveAt(Const.DynamicKeysInfoList[IndexInComponentsList].GridRowNumber);
-            
-            //int GridRowNumberToRemove = Const.DynamicKeysInfoList[IndexInComponentsList].GridRowNumber;
-            //var GridRowToRemove = MainGrid.Children.OfType<Label>().Single(Child => Grid.GetRow(Child) == GridRowNumberToRemove);
-            //MainGrid.Children.Remove(GridRowToRemove);
-
+         
             int CounterInDynamicKeysInfoList = IndexInComponentsList + 1;
 
             while (CounterInDynamicKeysInfoList < Const.DynamicKeysInfoList.Count)
             {
                 int LabelComponentNumberInGridSave = Const.DynamicKeysInfoList[CounterInDynamicKeysInfoList].FirstLabelInGridRowNumber;
-                //Const.DynamicKeysInfoList[CounterInDynamicKeysInfoList].FirstLabelInGridRowNumber -= Const.NumberOfControlsInRadixSystemsGridRow;
                 Const.DynamicKeysInfoList[CounterInDynamicKeysInfoList].FirstLabelInGridRowNumber = LabelComponentNumberInGrid;
                 LabelComponentNumberInGrid = LabelComponentNumberInGridSave;
                 Const.DynamicKeysInfoList[CounterInDynamicKeysInfoList].GridRowNumber--;
