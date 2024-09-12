@@ -16,6 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Remove="Constants\PredefinedColors.cs" />
     <Compile Remove="Converters\DecimalToFromBinaryConverter.cs" />
     <Compile Remove="Converters\DecimalToFromHexadecimalConverter.cs" />
     <Compile Remove="Converters\DecimalToFromOctalConverter.cs" />

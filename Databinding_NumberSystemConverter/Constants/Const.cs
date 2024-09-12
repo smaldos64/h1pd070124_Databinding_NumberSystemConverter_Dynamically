@@ -4,11 +4,34 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
-
+using System.Windows.Media;
 using ToolsLibrary;
 
 namespace Databinding_NumberSystemConverter.Constants
 {
+    public class ColorValueAndColorName
+    {
+        public string SolidColorBrushName { get; set; }
+        public SolidColorBrush SolidColorBrushValue { get; set; } = new SolidColorBrush();
+        
+        public ColorValueAndColorName()
+        {
+            //SolidColorBrushValue = Brushes.Red;
+        }
+
+        public ColorValueAndColorName(string SolidColorBrushName,
+                                      SolidColorBrush SolidColorBrushValue)
+        {
+            this.SolidColorBrushName = SolidColorBrushName;
+            this.SolidColorBrushValue = SolidColorBrushValue;
+        }
+
+        public override string ToString()
+        {
+            //return (this.SolidColorBrushName);
+            return this.SolidColorBrushValue.ToString();
+        }
+    }
     public class DynamicKeysInfo
     {
         public int FirstLabelInGridRowNumber;
@@ -264,6 +287,49 @@ namespace Databinding_NumberSystemConverter.Constants
                 FirstValidKey = Key.V,
                 SecondValidKey = Key.V,
                 IsKeyALetter = true
+            }
+        };
+
+        public static List<SolidColorBrush> ColorList = new List<SolidColorBrush>()
+        {
+            new SolidColorBrush()
+            {
+                Color = Colors.Red
+            },
+            new SolidColorBrush()
+            {
+                Color = Colors.Green
+            }
+        };
+
+        public static List<ColorValueAndColorName> ColorValueAndColorNamesList = new List<ColorValueAndColorName>()
+        {
+            //new ColorValueAndColorName("Red", Brushes.Red),
+            //new ColorValueAndColorName("Green", Brushes.Green),
+            new ColorValueAndColorName()
+            {
+                SolidColorBrushName = "Red",
+                SolidColorBrushValue = Brushes.Red
+            },
+            new ColorValueAndColorName()
+            {
+                SolidColorBrushName = "Green",
+                SolidColorBrushValue = Brushes.Green
+            },
+            new ColorValueAndColorName()
+            {
+                SolidColorBrushName = "Blue",
+                SolidColorBrushValue = Brushes.Blue
+            },
+            new ColorValueAndColorName()
+            {
+                SolidColorBrushName = "White",
+                SolidColorBrushValue = Brushes.White
+            },
+            new ColorValueAndColorName()
+            {
+                SolidColorBrushName = "Orange",
+                SolidColorBrushValue = Brushes.Orange
             }
         };
     }

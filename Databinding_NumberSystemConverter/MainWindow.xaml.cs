@@ -20,6 +20,7 @@ using Databinding_NumberSystemConverter.Tools;
 using System.Reflection;
 using System.Configuration;
 using Databinding_NumberSystemConverter.Converters;
+using System.Collections.ObjectModel;
 
 namespace Databinding_NumberSystemConverter
 {
@@ -28,13 +29,18 @@ namespace Databinding_NumberSystemConverter
     /// </summary>
     public partial class MainWindow : Window
     {
+        ObservableCollection<int> ComboBoxList = new ObservableCollection<int>()
+        {
+            3, 4, 5, 6, 7, 9, 12, 13, 14, 15
+        };
         public MainWindow()
         {
             InitializeComponent();
-            InitializeComboBox();
+            InitializeComboBoxRadixNumbers();
+            InitializeComboBoxBackGroundColors();
         }
 
-        private void InitializeComboBox()
+        private void InitializeComboBoxRadixNumbers()
         {
             cmbRadixNumbers.Items.Clear();
             for (int Counter = Const.MinRadixNumberSystem; Counter <= Const.MaxRadixNumberSystem; ++Counter)
@@ -45,6 +51,37 @@ namespace Databinding_NumberSystemConverter
                 }
             }
             cmbRadixNumbers.SelectedIndex = 0;
+        }
+
+        private void InitializeComboBoxBackGroundColors()
+        {
+            cmbBackGroundColors.Items.Clear();
+            cmbBackGroundColors.ItemsSource = Const.ColorValueAndColorNamesList;
+
+            //cmbBackGroundColors.ItemsSource = Const.ColorValueAndColorNamesList;
+            //cmbBackGroundColors.DisplayMemberPath = "ColorValueAndColorName.SolidColorBrushName";
+            //cmbBackGroundColors.SelectedValuePath = "SolidColorBrushValue";
+
+            //for (int Counter = 0; Counter < Const.ColorList.Count; ++Counter)
+            //{
+            //    cmbBackGroundColors.Items.Add(Const.ColorList[Counter]);
+            //    //cmbBackGroundColors.Items.Insert(Counter, Const.ColorValueAndColorNamesList[Counter]);
+            //}
+
+            //for (int Counter = 0; Counter < Const.ColorValueAndColorNamesList.Count; ++Counter)
+            //{
+            //    ComboBox ComboBoxItem = new ComboBox();
+            //    ComboBoxItem.DisplayMemberPath = Const.ColorValueAndColorNamesList[Counter].SolidColorBrushName;
+            //    ComboBoxItem.SelectedValue = Const.ColorValueAndColorNamesList[Counter].SolidColorBrushValue;
+            //    cmbBackGroundColors.Items.Add(ComboBoxItem);
+            //}
+
+            //ComboBox ComboBoxItem = new ComboBox();
+            //ComboBoxItem.DataContext = Const.ColorValueAndColorNamesList;
+            //ComboBoxItem.DisplayMemberPath = "SolidColorBrushName";
+            //ComboBoxItem.SelectedValuePath = "SolidColorBrushValue";
+            //cmbBackGroundColors.Items.Add(ComboBoxItem);
+            cmbBackGroundColors.SelectedIndex = 0;
         }
 
         private void txtCheckForValidPositiveNumberPressedForRadixSystem(object sender, KeyEventArgs e)
@@ -61,6 +98,12 @@ namespace Databinding_NumberSystemConverter
             }
         }
 
+        private void btnChangeBackGroundColor_Click(object sender, RoutedEventArgs e)
+        {
+            //this.Background = (Brush)cmbBackGroundColors.SelectedValue;
+            this.Background = ((ColorValueAndColorName)cmbBackGroundColors.SelectedItem).SolidColorBrushValue;
+        }
+
         #region DynamicRadixNumberSystemHandling
         private void btnRadixNumbers_Click(object sender, RoutedEventArgs e)
         {
@@ -72,7 +115,7 @@ namespace Databinding_NumberSystemConverter
                  (RadixNumberSystemValue <= Const.MaxRadixNumberSystem))
             {
                 Const.RadixNumberSystemInUseList.Add(RadixNumberSystemValue);
-                InitializeComboBox();
+                InitializeComboBoxRadixNumbers();
 
                 ControlTools.InsertRowInGrid(MainGrid);
                 
@@ -178,7 +221,7 @@ namespace Databinding_NumberSystemConverter
 
             Const.RadixNumberSystemInUseList.RemoveAt(IndexInRadixNumberSystemInUseList);
 
-            InitializeComboBox();
+            InitializeComboBoxRadixNumbers();
         }
 #endregion
     }

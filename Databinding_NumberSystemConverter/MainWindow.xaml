@@ -12,7 +12,7 @@
     </Window.Resources>
     
     <ScrollViewer VerticalScrollBarVisibility="Auto" Height="Auto" x:Name="srcThisScrollViewer">
-        <StackPanel x:Name="stcThisStack">
+        <StackPanel x:Name="stcThisStack" CanVerticallyScroll="True" Height="Auto">
             <Grid Height="Auto" Width="Auto" x:Name="MainGrid">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="20"/>
@@ -172,6 +172,21 @@
                      MaxLength="8"
                 />
 
+                <Label x:Name="lblBackGroundColor"
+                    Content = "Vælg ønsket Baggrundsfarve : "
+                    Grid.Row="3"
+                    Grid.Column="5"
+                />
+
+                <ComboBox x:Name="cmbBackGroundColors"
+                    Foreground="#542e3d"
+                    Background="#fff4e6"
+                    BorderThickness="1" 
+                    Grid.Row="3"
+                    Grid.Column="6"
+                    DisplayMemberPath="SolidColorBrushName"
+                />  
+
                 <Label x:Name="lblDividerLine"
                     Content="--------------------------------------------------------------------------------------" 
                     HorizontalAlignment="Left" 
@@ -179,6 +194,16 @@
                     Grid.Column="1"
                     Grid.ColumnSpan="2"
                     Grid.Row="4"
+                />
+
+                <Button x:Name="btnChangeBackGroundColor"
+                    Content="Ændre Baggrundsfarve" 
+                    HorizontalAlignment="Left" 
+                    VerticalAlignment="Top" 
+                    Width="130" 
+                    Grid.Row="4"
+                    Grid.Column="5" 
+                    Click="btnChangeBackGroundColor_Click" 
                 />
 
                 <Label x:Name="lblDynamicRadixNumberSystems"
