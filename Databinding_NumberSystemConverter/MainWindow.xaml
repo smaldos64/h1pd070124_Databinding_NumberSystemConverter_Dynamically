@@ -81,14 +81,14 @@
                     Grid.Column="6"
                 />
 
-                <Button x:Name="btnRadixNumbers"
+                <Button x:Name="btnAddRadixNumberSystem"
                         Content="Opret Nyt Talsystem" 
                         HorizontalAlignment="Left" 
                         VerticalAlignment="Top" 
                         Width="120" 
                         Grid.Row="1"
                         Grid.Column="5" 
-                        Click="btnRadixNumbers_Click" 
+                        Click="btnAddRadixNumberSystem_Click" 
                 />
 
                 <Label Content="Oktal Talsystem (8 tal/cifre) : " 
@@ -205,7 +205,6 @@
                     Grid.Row="4"
                     Grid.Column="2"
                     DisplayMemberPath="BrushName"
-                    ItemsSource="PredefinedBrushes.Brushes"
                 />  
 
                 <Button x:Name="btnAddBackGroundColor"
@@ -227,6 +226,16 @@
                     Grid.Row="5"
                 />
 
+                <Button x:Name="btnCloseApplication"
+                    Content="Exit" 
+                    HorizontalAlignment="Left" 
+                    VerticalAlignment="Top" 
+                    Width="130" 
+                    Grid.Row="5"
+                    Grid.Column="5" 
+                    Click="btnCloseApplication_Click" 
+                />
+
                 <Label x:Name="lblDynamicRadixNumberSystems"
                     Content="Dynamisk opretttede Tal systemer herunder => " 
                     HorizontalAlignment="Left" 
@@ -236,61 +245,6 @@
                     Grid.Row="7"
                     Tag="16"
                 />
-
-                <ComboBox x:Name="cmbTestListBinding"
-                    Foreground="#542e3d"
-                    Background="#fff4e6"
-                    BorderThickness="1" 
-                    Grid.Row="8"
-                    Grid.Column="2"
-                    DisplayMemberPath="Property1"
-                    
-                    SelectionChanged="cmbTestListBinding_SelectionChanged"
-                />
-
-                <TextBox x:Name="txtTestString" 
-                     HorizontalAlignment="Left" 
-                     Height="23" 
-                     TextWrapping="NoWrap"  
-                     VerticalAlignment="Top" 
-                     Width="Auto" 
-                     Grid.Row="9" 
-                     Grid.Column="2"
-                     MinWidth="220" 
-                />
-
-                <TextBox x:Name="txtTestInt" 
-                     HorizontalAlignment="Left" 
-                     Height="23" 
-                     TextWrapping="NoWrap"  
-                     VerticalAlignment="Top" 
-                     Width="Auto" 
-                     Grid.Row="9" 
-                     Grid.Column="3"
-                     MinWidth="220" 
-                />
-
-                <Button x:Name="btnTestComboBox"
-                    Content="Adder Stuff" 
-                    HorizontalAlignment="Left" 
-                    VerticalAlignment="Top" 
-                    Width="130" 
-                    Grid.Row="9"
-                    Grid.Column="5" 
-                    Click="btnTestComboBox_Click" 
-                />
-
-                <TextBox x:Name="txtTestComboBoxSeletion" 
-                    HorizontalAlignment="Left" 
-                    Height="23" 
-                    TextWrapping="NoWrap"  
-                    VerticalAlignment="Top" 
-                    Width="Auto" 
-                    Grid.Row="10" 
-                    Grid.Column="2"
-                    MinWidth="220" 
-                />
-
 
             </Grid>
         </StackPanel>

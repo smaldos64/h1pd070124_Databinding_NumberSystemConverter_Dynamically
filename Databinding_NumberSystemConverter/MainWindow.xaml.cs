@@ -1,6 +1,4 @@
-﻿#define Use_XAML_Components_In_Code
-
-using CommunityToolkit.Mvvm.ComponentModel;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
 using Databinding_NumberSystemConverter.Constants;
 using System.Media;
 using System.Text;
@@ -20,6 +18,9 @@ using Databinding_NumberSystemConverter.Tools;
 using System.Reflection;
 using System.Configuration;
 using Databinding_NumberSystemConverter.Converters;
+using Databinding_NumberSystemConverter.Classes;
+using Databinding_NumberSystemConverter.ViewModels;
+using Databinding_NumberSystemConverter.ExtensionMethods;
 using System.Collections.ObjectModel;
 
 namespace Databinding_NumberSystemConverter
@@ -29,84 +30,22 @@ namespace Databinding_NumberSystemConverter
     /// </summary>
     public partial class MainWindow : Window
     {
-        ObservableCollection<ColorValueAndColorName> ColorValueAndColorNamesListTemp = new ObservableCollection<ColorValueAndColorName>(Const.ColorValueAndColorNamesList);
-        //{
-        //    get { return (Const.ColorValueAndColorNamesList; }
-        //}
-        ObservableCollection<ColorValueAndColorName> ColorValueAndColorNamesList
-        {
-            get { return ColorValueAndColorNamesListTemp; }
-        }
+        ProjectViewModel ProjectViewModelObject = new ProjectViewModel();
 
-        //ObservableCollection<int> ComboBoxList = new ObservableCollection<int>()
-        //{
-        //    3, 4, 5, 6, 7, 9, 12, 13, 14, 15
-        //};
-
-        ObservableCollection<MyItem> myItems = new ObservableCollection<MyItem>
-        {
-            new MyItem { Property1 = "Value1", Property2 = 10 },
-            new MyItem { Property1 = "Value2", Property2 = 20 },
-            // ... more items
-        };
-
-        MyViewModel MyViewModelObject = new MyViewModel();
         public MainWindow()
         {
             InitializeComponent();
-            InitializeComboBoxRadixNumbers();
-            InitializeComboBoxBackGroundColors();
-            MyViewModelObject.MyItems = myItems;
-            //this.DataContext = MyViewModelObject;
-            //this.DataContext = new MyViewModel { MyItems = myItems };
-            cmbTestListBinding.ItemsSource = MyViewModelObject.MyItems;
-            cmbTestListBinding.SelectedIndex = 0;
-            //cmbAllBackGroundColors.ItemsSource = PredefinedBrushes.Brushes;
-            cmbAllBackGroundColors.SelectedIndex = 0;
-        }
 
-        private void InitializeComboBoxRadixNumbers()
-        {
-            cmbRadixNumbers.Items.Clear();
-            for (int Counter = Const.MinRadixNumberSystem; Counter <= Const.MaxRadixNumberSystem; ++Counter)
-            {
-                if (!Const.RadixNumberSystemInUseList.Contains(Counter))
-                {
-                    cmbRadixNumbers.Items.Add(Counter.ToString());
-                }
-            }
+            ProjectViewModelObject.RadixNumberSystemsList = Const.RadixNumberSystemsList;
+            cmbRadixNumbers.ItemsSource = ProjectViewModelObject.RadixNumberSystemsList;
             cmbRadixNumbers.SelectedIndex = 0;
-        }
 
-        private void InitializeComboBoxBackGroundColors()
-        {
-            //cmbBackGroundColors.Items.Clear();
-            cmbBackGroundColors.ItemsSource = ColorValueAndColorNamesList;
-
-            //cmbBackGroundColors.ItemsSource = Const.ColorValueAndColorNamesList;
-            //cmbBackGroundColors.DisplayMemberPath = "ColorValueAndColorName.SolidColorBrushName";
-            //cmbBackGroundColors.SelectedValuePath = "SolidColorBrushValue";
-
-            //for (int Counter = 0; Counter < Const.ColorList.Count; ++Counter)
-            //{
-            //    cmbBackGroundColors.Items.Add(Const.ColorList[Counter]);
-            //    //cmbBackGroundColors.Items.Insert(Counter, Const.ColorValueAndColorNamesList[Counter]);
-            //}
-
-            //for (int Counter = 0; Counter < Const.ColorValueAndColorNamesList.Count; ++Counter)
-            //{
-            //    ComboBox ComboBoxItem = new ComboBox();
-            //    ComboBoxItem.DisplayMemberPath = Const.ColorValueAndColorNamesList[Counter].SolidColorBrushName;
-            //    ComboBoxItem.SelectedValue = Const.ColorValueAndColorNamesList[Counter].SolidColorBrushValue;
-            //    cmbBackGroundColors.Items.Add(ComboBoxItem);
-            //}
-
-            //ComboBox ComboBoxItem = new ComboBox();
-            //ComboBoxItem.DataContext = Const.ColorValueAndColorNamesList;
-            //ComboBoxItem.DisplayMemberPath = "SolidColorBrushName";
-            //ComboBoxItem.SelectedValuePath = "SolidColorBrushValue";
-            //cmbBackGroundColors.Items.Add(ComboBoxItem);
+            ProjectViewModelObject.ColorValueAndColorNameList = Const.ColorValueAndColorNamesList;
+            cmbBackGroundColors.ItemsSource = ProjectViewModelObject.ColorValueAndColorNameList;
             cmbBackGroundColors.SelectedIndex = 0;
+
+            cmbAllBackGroundColors.ItemsSource = PredefinedBrushes.Brushes;
+            cmbAllBackGroundColors.SelectedIndex = 0;
         }
 
         private void txtCheckForValidPositiveNumberPressedForRadixSystem(object sender, KeyEventArgs e)
@@ -128,7 +67,19 @@ namespace Databinding_NumberSystemConverter
             ColorValueAndColorName ColorValueAndColorNameObject = new ColorValueAndColorName();
             ColorValueAndColorNameObject.SolidColorBrushName = ((PredefinedBrush)cmbAllBackGroundColors.SelectedItem).BrushName;
             ColorValueAndColorNameObject.SolidColorBrushValue = ((PredefinedBrush)cmbAllBackGroundColors.SelectedItem).BrushColor;
-            Const.ColorValueAndColorNamesList.Add(ColorValueAndColorNameObject);
+            if (!Const.ColorValueAndColorNamesList.Any(i => i.SolidColorBrushName == ColorValueAndColorNameObject.SolidColorBrushName))
+            {
+                Const.ColorValueAndColorNamesList.Add(ColorValueAndColorNameObject);
+            }
+            else
+            {
+                SystemSounds.Beep.Play();
+            }
+        }
+
+        private void btnCloseApplication_Click(object sender, RoutedEventArgs e)
+        {
+            Close();
         }
 
         private void cmbBackGroundColors_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -137,7 +88,7 @@ namespace Databinding_NumberSystemConverter
         }
 
         #region DynamicRadixNumberSystemHandling
-        private void btnRadixNumbers_Click(object sender, RoutedEventArgs e)
+        private void btnAddRadixNumberSystem_Click(object sender, RoutedEventArgs e)
         {
             int RadixNumberSystemValue = Convert.ToInt16(cmbRadixNumbers.SelectedValue);
             DynamicKeysInfo DynamicKeysInfoObject = new DynamicKeysInfo();
@@ -146,9 +97,6 @@ namespace Databinding_NumberSystemConverter
             if ((RadixNumberSystemValue >= Const.MinRadixNumberSystem) &&
                  (RadixNumberSystemValue <= Const.MaxRadixNumberSystem))
             {
-                Const.RadixNumberSystemInUseList.Add(RadixNumberSystemValue);
-                InitializeComboBoxRadixNumbers();
-
                 ControlTools.InsertRowInGrid(MainGrid);
 
                 String LabelName = "lblRadixNumber" + RadixNumberSystemValue.ToString();
@@ -179,6 +127,7 @@ namespace Databinding_NumberSystemConverter
 
                 TextBoxObject.Tag = RadixNumberSystemValue;
                 TextBoxObject.MaxLength = 8;
+                TextBoxObject.IsReadOnly = true;
 
                 Binding BindingObject = new Binding();
                 BindingObject.UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged;
@@ -202,11 +151,17 @@ namespace Databinding_NumberSystemConverter
                                                 220,
                                                 23,
                                                 FunctionButtonClicked: btnClearRadixSystem_Click);
+
+                Const.RadixNumberSystemsList.Remove(RadixNumberSystemValue);
+                cmbRadixNumbers.SelectedIndex = 0;
             }
         }
 
         private void btnDeleteNumbers_Click(object sender, RoutedEventArgs e)
         {
+            // Viser hvor stærk DataBinding er. Alle tekstbokse relateret til 
+            // RadixNumber SYstem vil have deres tekst slettet netop på grund
+            // af deres indbyrdes DataBindings. 
             txtRadixNumber2.Text = String.Empty;
         }
 
@@ -249,46 +204,10 @@ namespace Databinding_NumberSystemConverter
 
             Const.DynamicKeysInfoList.RemoveAt(IndexInComponentsList);
 
-            int IndexInRadixNumberSystemInUseList = Const.RadixNumberSystemInUseList.FindIndex(r => r == RadixNumberSystemValue);
-
-            Const.RadixNumberSystemInUseList.RemoveAt(IndexInRadixNumberSystemInUseList);
-
-            InitializeComboBoxRadixNumbers();
+            Const.RadixNumberSystemsList.Add(RadixNumberSystemValue);
+            Const.RadixNumberSystemsList.BubbleSort();
+            cmbRadixNumbers.SelectedIndex = 0;
         }
         #endregion
-
-        private void btnTestComboBox_Click(object sender, RoutedEventArgs e)
-        {
-            MyItem MyItemObject = new MyItem();
-
-            MyItemObject.Property1 = txtTestString.Text;
-            MyItemObject.Property2 = Convert.ToInt32(txtTestInt.Text);
-            myItems.Add(MyItemObject);
-            txtTestString.Text = String.Empty;
-            txtTestInt.Text = String.Empty;
-        }
-
-        private void cmbTestListBinding_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            txtTestComboBoxSeletion.Text = ((MyItem)cmbTestListBinding.SelectedItem).Property1 + " : " +
-                                           ((MyItem)cmbTestListBinding.SelectedItem).Property2.ToString();
-        }
-        
-    }
-
-    public class MyItem
-    {
-        public string Property1 { get; set; } = null;
-        public int Property2 { get; set; }
-
-        public override string ToString()
-        {
-            return (this.Property1);
-        }
-    }
-
-    public class MyViewModel
-    {
-        public ObservableCollection<MyItem> MyItems { get; set; }
-    }
+    }   
 }
