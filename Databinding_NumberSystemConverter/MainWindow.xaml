@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Databinding_NumberSystemConverter"
         xmlns:other="clr-namespace:Databinding_NumberSystemConverter.Converters"
+        xmlns:constants="clr-namespace:Databinding_NumberSystemConverter.Constants"
         mc:Ignorable="d"
         Title="NumberSystemConverter" Height="Auto" Width="1280" Background="Yellow" MinHeight="1020">
     <Window.Resources>
@@ -32,7 +33,7 @@
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="20"/>
+                    <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
@@ -184,8 +185,37 @@
                     BorderThickness="1" 
                     Grid.Row="3"
                     Grid.Column="6"
-                    DisplayMemberPath="SolidColorBrushName"
+                    DisplayMemberPath="{Binding Path=SolidColorBrushName}" 
+                    SelectionChanged="cmbBackGroundColors_SelectionChanged"
+                />
+
+                <Label Content="Vælg farve du vil addere : " 
+                   HorizontalAlignment="Left" 
+                   VerticalAlignment="Top" 
+                   x:Name="lblAllBackGroundColors" 
+                   Grid.Column="1"
+                   Grid.Row="4"
+                />
+
+                <ComboBox x:Name="cmbAllBackGroundColors"
+                    Foreground="#542e3d"
+                    Background="#fff4e6"
+                    BorderThickness="1" 
+                    Grid.Row="4"
+                    Grid.Column="2"
+                    DisplayMemberPath="BrushName"
+                    ItemsSource="PredefinedBrushes.Brushes"
                 />  
+
+                <Button x:Name="btnAddBackGroundColor"
+                    Content="Adder Baggrundsfarve" 
+                    HorizontalAlignment="Left" 
+                    VerticalAlignment="Top" 
+                    Width="130" 
+                    Grid.Row="4"
+                    Grid.Column="5" 
+                    Click="btnAddBackGroundColor_Click" 
+                />
 
                 <Label x:Name="lblDividerLine"
                     Content="--------------------------------------------------------------------------------------" 
@@ -193,17 +223,7 @@
                     VerticalAlignment="Top" 
                     Grid.Column="1"
                     Grid.ColumnSpan="2"
-                    Grid.Row="4"
-                />
-
-                <Button x:Name="btnChangeBackGroundColor"
-                    Content="Ændre Baggrundsfarve" 
-                    HorizontalAlignment="Left" 
-                    VerticalAlignment="Top" 
-                    Width="130" 
-                    Grid.Row="4"
-                    Grid.Column="5" 
-                    Click="btnChangeBackGroundColor_Click" 
+                    Grid.Row="5"
                 />
 
                 <Label x:Name="lblDynamicRadixNumberSystems"
@@ -212,9 +232,66 @@
                     VerticalAlignment="Top" 
                     Grid.Column="1"
                     Grid.ColumnSpan="2"
-                    Grid.Row="6"
+                    Grid.Row="7"
                     Tag="16"
-                />  
+                />
+
+
+                <ComboBox x:Name="cmbTestListBinding"
+                    Foreground="#542e3d"
+                    Background="#fff4e6"
+                    BorderThickness="1" 
+                    Grid.Row="8"
+                    Grid.Column="2"
+                    DisplayMemberPath="Property1"
+                    ItemsSource="{Binding MyItems, Mode=TwoWay}"
+                    SelectionChanged="cmbTestListBinding_SelectionChanged"
+                />
+
+                <TextBox x:Name="txtTestString" 
+                     HorizontalAlignment="Left" 
+                     Height="23" 
+                     TextWrapping="NoWrap"  
+                     VerticalAlignment="Top" 
+                     Width="Auto" 
+                     Grid.Row="9" 
+                     Grid.Column="2"
+                     MinWidth="220" 
+                />
+
+                <TextBox x:Name="txtTestInt" 
+                     HorizontalAlignment="Left" 
+                     Height="23" 
+                     TextWrapping="NoWrap"  
+                     VerticalAlignment="Top" 
+                     Width="Auto" 
+                     Grid.Row="9" 
+                     Grid.Column="3"
+                     MinWidth="220" 
+                />
+
+                <Button x:Name="btnTestComboBox"
+                    Content="Adder Stuff" 
+                    HorizontalAlignment="Left" 
+                    VerticalAlignment="Top" 
+                    Width="130" 
+                    Grid.Row="9"
+                    Grid.Column="5" 
+                    Click="btnTestComboBox_Click" 
+                />
+
+                <TextBox x:Name="txtTestComboBoxSeletion" 
+                    HorizontalAlignment="Left" 
+                    Height="23" 
+                    TextWrapping="NoWrap"  
+                    VerticalAlignment="Top" 
+                    Width="Auto" 
+                    Grid.Row="10" 
+                    Grid.Column="2"
+                    MinWidth="220" 
+                />
+
+
             </Grid>
         </StackPanel>
     </ScrollViewer>

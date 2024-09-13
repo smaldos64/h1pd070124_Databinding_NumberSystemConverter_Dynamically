@@ -29,15 +29,36 @@ namespace Databinding_NumberSystemConverter
     /// </summary>
     public partial class MainWindow : Window
     {
-        ObservableCollection<int> ComboBoxList = new ObservableCollection<int>()
+        ObservableCollection<ColorValueAndColorName> ColorValueAndColorNamesListTemp = new ObservableCollection<ColorValueAndColorName>(Const.ColorValueAndColorNamesList);
+        //{
+        //    get { return (Const.ColorValueAndColorNamesList; }
+        //}
+        ObservableCollection<ColorValueAndColorName> ColorValueAndColorNamesList
         {
-            3, 4, 5, 6, 7, 9, 12, 13, 14, 15
+            get { return ColorValueAndColorNamesListTemp; }
+        }
+
+        //ObservableCollection<int> ComboBoxList = new ObservableCollection<int>()
+        //{
+        //    3, 4, 5, 6, 7, 9, 12, 13, 14, 15
+        //};
+
+        ObservableCollection<MyItem> myItems = new ObservableCollection<MyItem>
+        {
+            new MyItem { Property1 = "Value1", Property2 = 10 },
+            new MyItem { Property1 = "Value2", Property2 = 20 },
+            // ... more items
         };
+
         public MainWindow()
         {
             InitializeComponent();
             InitializeComboBoxRadixNumbers();
             InitializeComboBoxBackGroundColors();
+            this.DataContext = new MyViewModel { MyItems = myItems };
+            cmbTestListBinding.SelectedIndex = 0;
+            //cmbAllBackGroundColors.ItemsSource = PredefinedBrushes.Brushes;
+            cmbAllBackGroundColors.SelectedIndex = 0;
         }
 
         private void InitializeComboBoxRadixNumbers()
@@ -55,8 +76,8 @@ namespace Databinding_NumberSystemConverter
 
         private void InitializeComboBoxBackGroundColors()
         {
-            cmbBackGroundColors.Items.Clear();
-            cmbBackGroundColors.ItemsSource = Const.ColorValueAndColorNamesList;
+            //cmbBackGroundColors.Items.Clear();
+            cmbBackGroundColors.ItemsSource = ColorValueAndColorNamesList;
 
             //cmbBackGroundColors.ItemsSource = Const.ColorValueAndColorNamesList;
             //cmbBackGroundColors.DisplayMemberPath = "ColorValueAndColorName.SolidColorBrushName";
@@ -98,9 +119,16 @@ namespace Databinding_NumberSystemConverter
             }
         }
 
-        private void btnChangeBackGroundColor_Click(object sender, RoutedEventArgs e)
+        private void btnAddBackGroundColor_Click(object sender, RoutedEventArgs e)
         {
-            //this.Background = (Brush)cmbBackGroundColors.SelectedValue;
+            ColorValueAndColorName ColorValueAndColorNameObject = new ColorValueAndColorName();
+            ColorValueAndColorNameObject.SolidColorBrushName = ((PredefinedBrush)cmbAllBackGroundColors.SelectedItem).BrushName;
+            ColorValueAndColorNameObject.SolidColorBrushValue = ((PredefinedBrush)cmbAllBackGroundColors.SelectedItem).BrushColor;
+            Const.ColorValueAndColorNamesList.Add(ColorValueAndColorNameObject);
+        }
+
+        private void cmbBackGroundColors_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
             this.Background = ((ColorValueAndColorName)cmbBackGroundColors.SelectedItem).SolidColorBrushValue;
         }
 
@@ -118,7 +146,7 @@ namespace Databinding_NumberSystemConverter
                 InitializeComboBoxRadixNumbers();
 
                 ControlTools.InsertRowInGrid(MainGrid);
-                
+
                 String LabelName = "lblRadixNumber" + RadixNumberSystemValue.ToString();
                 String LabelText = RadixNumberSystemValue.ToString() + " Tal System (" + RadixNumberSystemValue.ToString() + " tal / cifre) : ";
                 ControlTools.InsertLabelInGrid(MainGrid,
@@ -197,12 +225,12 @@ namespace Databinding_NumberSystemConverter
             else
             {
                 MainGrid.Children.RemoveRange(Const.DynamicKeysInfoList[IndexInComponentsList].FirstLabelInGridRowNumber,
-                                              Const.DynamicKeysInfoList[IndexInComponentsList + 1].FirstLabelInGridRowNumber - 
+                                              Const.DynamicKeysInfoList[IndexInComponentsList + 1].FirstLabelInGridRowNumber -
                                               Const.DynamicKeysInfoList[IndexInComponentsList].FirstLabelInGridRowNumber);
             }
 
             MainGrid.RowDefinitions.RemoveAt(Const.DynamicKeysInfoList[IndexInComponentsList].GridRowNumber);
-         
+
             int CounterInDynamicKeysInfoList = IndexInComponentsList + 1;
 
             while (CounterInDynamicKeysInfoList < Const.DynamicKeysInfoList.Count)
@@ -223,6 +251,40 @@ namespace Databinding_NumberSystemConverter
 
             InitializeComboBoxRadixNumbers();
         }
-#endregion
+        #endregion
+
+        private void btnTestComboBox_Click(object sender, RoutedEventArgs e)
+        {
+            MyItem MyItemObject = new MyItem();
+
+            MyItemObject.Property1 = txtTestString.Text;
+            MyItemObject.Property2 = Convert.ToInt32(txtTestInt.Text);
+            myItems.Add(MyItemObject);
+            txtTestString.Text = String.Empty;
+            txtTestInt.Text = String.Empty;
+        }
+
+        private void cmbTestListBinding_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            txtTestComboBoxSeletion.Text = ((MyItem)cmbTestListBinding.SelectedItem).Property1 + " : " +
+                                           ((MyItem)cmbTestListBinding.SelectedItem).Property2.ToString();
+        }
+        
+    }
+
+    public class MyItem
+    {
+        public string Property1 { get; set; } = null;
+        public int Property2 { get; set; }
+
+        public override string ToString()
+        {
+            return (this.Property1);
+        }
+    }
+
+    public class MyViewModel
+    {
+        public ObservableCollection<MyItem> MyItems { get; set; }
     }
 }
