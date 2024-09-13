@@ -9,13 +9,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="ViewModels\**" />
-    <EmbeddedResource Remove="ViewModels\**" />
-    <None Remove="ViewModels\**" />
-    <Page Remove="ViewModels\**" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Compile Remove="Constants\PredefinedColors.cs" />
     <Compile Remove="Converters\DecimalToFromBinaryConverter.cs" />
     <Compile Remove="Converters\DecimalToFromHexadecimalConverter.cs" />

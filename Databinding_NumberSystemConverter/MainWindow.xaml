@@ -6,6 +6,7 @@
         xmlns:local="clr-namespace:Databinding_NumberSystemConverter"
         xmlns:other="clr-namespace:Databinding_NumberSystemConverter.Converters"
         xmlns:constants="clr-namespace:Databinding_NumberSystemConverter.Constants"
+        xmlns:vi="clr-namespace:Databinding_NumberSystemConverter.ViewModels"
         mc:Ignorable="d"
         Title="NumberSystemConverter" Height="Auto" Width="1280" Background="Yellow" MinHeight="1020">
     <Window.Resources>
@@ -236,7 +237,6 @@
                     Tag="16"
                 />
 
-
                 <ComboBox x:Name="cmbTestListBinding"
                     Foreground="#542e3d"
                     Background="#fff4e6"
@@ -244,7 +244,7 @@
                     Grid.Row="8"
                     Grid.Column="2"
                     DisplayMemberPath="Property1"
-                    ItemsSource="{Binding MyItems, Mode=TwoWay}"
+                    
                     SelectionChanged="cmbTestListBinding_SelectionChanged"
                 />
 

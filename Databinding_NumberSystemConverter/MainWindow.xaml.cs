@@ -50,12 +50,16 @@ namespace Databinding_NumberSystemConverter
             // ... more items
         };
 
+        MyViewModel MyViewModelObject = new MyViewModel();
         public MainWindow()
         {
             InitializeComponent();
             InitializeComboBoxRadixNumbers();
             InitializeComboBoxBackGroundColors();
-            this.DataContext = new MyViewModel { MyItems = myItems };
+            MyViewModelObject.MyItems = myItems;
+            this.DataContext = MyViewModelObject;
+            //this.DataContext = new MyViewModel { MyItems = myItems };
+            cmbTestListBinding.ItemsSource = MyViewModelObject.MyItems;
             cmbTestListBinding.SelectedIndex = 0;
             //cmbAllBackGroundColors.ItemsSource = PredefinedBrushes.Brushes;
             cmbAllBackGroundColors.SelectedIndex = 0;
