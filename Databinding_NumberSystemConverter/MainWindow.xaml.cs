@@ -57,7 +57,7 @@ namespace Databinding_NumberSystemConverter
             InitializeComboBoxRadixNumbers();
             InitializeComboBoxBackGroundColors();
             MyViewModelObject.MyItems = myItems;
-            this.DataContext = MyViewModelObject;
+            //this.DataContext = MyViewModelObject;
             //this.DataContext = new MyViewModel { MyItems = myItems };
             cmbTestListBinding.ItemsSource = MyViewModelObject.MyItems;
             cmbTestListBinding.SelectedIndex = 0;
